@@ -1,5 +1,6 @@
 from transformers import AutoTokenizer, GPT2Tokenizer, GPT2LMHeadModel, RobertaForSequenceClassification
 
+from AdvDecoder import decode
 from BatchTextGenerationPipeline import BatchTextGenerationPipeline
 from IsFakePipeline import IsFakePipeline
 
@@ -12,8 +13,4 @@ detector_model = RobertaForSequenceClassification.from_pretrained("roberta-base-
 classifier = IsFakePipeline(model=detector_model, tokenizer=detector_tokenizer)
 generator = BatchTextGenerationPipeline(model=model, tokenizer=tokenizer)
 
-prompt = ""
-for i in range(10):
-    texts = generator.generate(prompt=prompt, generate_length=10, num_return_sequences=50, do_sample=True, top_p=0.95, no_repeat_ngram_size=3)
-    prompt, classification = classifier.getLeastFake(texts)
-    print("\n\n", classification, prompt)
+print(decode(prompt="", generate_length=50, step=10, sequences=3, generator=generator, classifier=classifier))
